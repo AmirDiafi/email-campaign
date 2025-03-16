@@ -78,9 +78,11 @@ model UserProductPreference {
 }
  -->
 
-<!-- INSERT INTO "User" (email, birthdate) VALUES ('  ', '  ');
+```bash
+INSERT INTO "User" (email, birthdate) VALUES ('  ', '  ');
 INSERT INTO "Product" (name, description, price, image_url) VALUES ('  ', '  ', '  ', '  ');
-INSERT INTO "UserProductPreference" (user_id, product_id) VALUES ('  ', '  '); -->
+INSERT INTO "UserProductPreference" (user_id, product_id) VALUES ('  ', '  ');
+```
 
 ## Run
 
