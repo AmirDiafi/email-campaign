@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 
 /**
@@ -25,8 +25,11 @@ export class UsersController {
    * POST /users/create
    */
   @Post('create')
-  async createUser(email: string, birthdate: Date) {
-    return this.usersService.createUser(email, birthdate);
+  async createUser(
+    @Body() userDataRequest: { email: string; birthdate: Date | string },
+  ) {
+    const { email, birthdate } = userDataRequest;
+    return this.usersService.createUser(email, new Date(birthdate));
   }
 
   /**
