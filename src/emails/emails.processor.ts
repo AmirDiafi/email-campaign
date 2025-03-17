@@ -70,13 +70,13 @@ export class EmailProcessor {
       subject: `🎉 Happy Birthday, ${user.email.split('@')[0]}! Here's a special gift for you 🎁`,
       html: `
         <h2>Happy Birthday, ${user.email.split('@')[0]}! 🎉</h2>
-        <p>We have a special discount just for you! Use this code at checkout:</p>
-        <h3 style="color:blue;">${discountCode}</h3>
-        <p>Here are some products we think you'll love:</p>
+        <p style="font-size: 16px;">We have a special discount just for you! Use this code at checkout:</p>
+        <h5 style="color:blue;">${discountCode}</h5>
+        <h3 style="color: green;">Here are some products we think you'll love:</h3>
         <ul style="list-style-type: none; padding: 0;">
-          ${recommendedProducts.map((p) => `<li style="margin-bottom: 10px;">${p.name} - $${p.price}</li>`).join('')}
+          ${recommendedProducts.map((p) => `<li style="margin-bottom: 10px; font-size: 16px;">${p.name} - $${p.price}</li>`).join('')}
         </ul>
-        <p>Enjoy your birthday shopping! 🛍️</p>
+        <p style="font-size: 14px;">Enjoy your birthday shopping! 🛍️</p>
       `,
     };
 
