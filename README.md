@@ -1,6 +1,3 @@
-Here’s the content formatted as a `README.md` file for GitHub:
-
-````markdown
 # Birthday Discount Campaign
 
 ## Project Overview
@@ -28,7 +25,6 @@ This project is a Birthday Discount Campaign system built with **NestJS** and **
 git clone <repository-url>
 cd birthday-discount-campaign
 ```
-````
 
 ### 2. Install Dependencies
 
@@ -65,10 +61,13 @@ redis-server
 ### 6. Start the Application
 
 - **Development Mode:**
+
   ```bash
   pnpm start:dev
   ```
+
 - **Production Mode:**
+
   ```bash
   pnpm build
   pnpm start:prod
@@ -78,7 +77,7 @@ redis-server
 
 ## Project Structure
 
-```
+```bash
 /project
   ├── main.ts
   ├── app.module.ts
@@ -170,13 +169,3 @@ pnpm test:watch
 ```
 
 ---
-
-## Author
-
-**Amir Diafi**  
-**Date:** March 2025
-
-```
-
-This `README.md` file is ready to be used in your GitHub repository. It provides a clear and structured overview of the project, setup instructions, and key details.
-```
