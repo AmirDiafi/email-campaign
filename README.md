@@ -22,7 +22,7 @@ This project is a Birthday Discount Campaign system built with **NestJS** and **
 ### 1. Clone the Repository
 
 ```bash
-git clone [repository-url](https://github.com/AmirDiafi/email-campaign.git)
+git clone https://github.com/AmirDiafi/email-campaign.git
 cd birthday-discount-campaign
 ```
 
