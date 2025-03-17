@@ -46,6 +46,8 @@ REDIS_URL="redis://localhost:6379"
 
 ### 4. Setup Database
 
+(Make sure you have Postgres Installed on your command)
+
 ```bash
 pnpm prisma migrate dev --name init
 pnpm prisma db seed
