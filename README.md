@@ -1,93 +1,182 @@
-<!-- This is what you need to set up and run the project -->
+Here’s the content formatted as a `README.md` file for GitHub:
 
-# Setup
+````markdown
+# Birthday Discount Campaign
 
-To run this project, install it locally using npm:
+## Project Overview
+
+This project is a Birthday Discount Campaign system built with **NestJS** and **Prisma**. It sends personalized discount emails to users before their birthday and displays recommended products in the app.
+
+---
+
+## Technologies Used
+
+- **NestJS** - Backend framework
+- **Prisma** - ORM for PostgreSQL
+- **PostgreSQL** - Database
+- **Redis** - Queue management for background jobs
+- **BullMQ** - Job queue for email processing
+- **Nodemailer** - Email sending service
+
+---
+
+## Setup Instructions
+
+### 1. Clone the Repository
 
 ```bash
-cd ../birthday-discount-campaign
+git clone <repository-url>
+cd birthday-discount-campaign
+```
+````
+
+### 2. Install Dependencies
+
+```bash
 pnpm install
 ```
 
-<!-- Redis -->
+### 3. Setup Environment Variables
 
-## Redis
+Create a `.env` file in the root directory and add:
 
-To run this project, you need to have Redis installed on your machine. You can download it from [here](https://redis.io/download).
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/birthdaydb"
+EMAIL_USER="your-email@gmail.com"
+EMAIL_PASS="your-email-password"
+JWT_SECRET="your-secret-key"
+REDIS_URL="redis://localhost:6379"
+```
 
-After installing Redis, you can run it using the following command:
+### 4. Setup Database
+
+```bash
+pnpm prisma migrate dev --name init
+pnpm prisma db seed
+pnpm prisma studio # Optional: View data in Prisma Studio
+```
+
+### 5. Run Redis Server
 
 ```bash
 redis-server
 ```
 
-<!-- .env -->
+### 6. Start the Application
 
-## .env
+- **Development Mode:**
+  ```bash
+  pnpm start:dev
+  ```
+- **Production Mode:**
+  ```bash
+  pnpm build
+  pnpm start:prod
+  ```
 
-Create a .env file in the root directory of the project. Add the following environment-specific variables:
-DATABASE_URL="postgresql://USER:PASS@localhost:5432/birthdaydb"
-EMAIL_USER="<YOUR_EMAIL@example.com>"
-EMAIL_PASS="YOUR_EMAIL_PASSWORD"
-JWT_SECRET="YOUR_JWT_SECRET"
-REDIS_URL="redis://localhost:6379"
+---
 
-```-->
+## Project Structure
+
+```
+/project
+  ├── main.ts
+  ├── app.module.ts
+  ├── app.service.ts
+  ├── app.controller.ts
+  ├── prisma
+  │   ├── schema.prisma
+  │   ├── seed.ts
+  ├── src
+  │   ├── emails
+  │   │   ├── emails.module.ts
+  │   │   ├── emails.service.ts
+  │   │   ├── emails.processor.ts
+  │   │   ├── emails.controller.ts
+  │   │   ├── emails.scheduler.ts
+  │   ├── users
+  │   │   ├── users.module.ts
+  │   │   ├── users.service.ts
+  │   │   ├── users.controller.ts
+  │   ├── products
+  │   │   ├── products.module.ts
+  │   │   ├── products.service.ts
+  │   │   ├── products.controller.ts
+  │   ├── jobs
+  │   │   ├── jobs.module.ts
+  │   │   ├── jobs.service.ts
+  │   │   ├── email.processor.ts
+  │   ├── prisma
+  │   │   ├── prisma.module.ts
+  │   │   ├── prisma.service.ts
+  │   │   ├── prisma.processor.ts
+  ├── test
+```
+
+---
+
+## Key Features
+
+### 1. User Management
+
+- Create and manage users
+- Store email and birthdate
+
+### 2. Product Management
+
+- Store products with descriptions and prices
+- Track user product preferences
+
+### 3. Email Notification System
+
+- Send personalized emails with discount codes to users within 7 days of their birthday.
+- Use a cron job running at midnight to identify users with upcoming birthdays within the next 7 days.
+- Process and schedule email deliveries using BullMQ and Redis for efficient handling of tasks.
+
+### 4. Birthday Recommendations
+
+- Display recommended products in the app during the user's birthday week.
+
+---
+
+## API Endpoints
+
+### Users
+
+- `GET /users`  
+  Returns a list of all users (not ready yet).
+- `POST /users/create`  
+  Creates a new user including recommended products.
+
+### Products
+
+- `GET /products`  
+  Returns a list of all products (not ready yet).
+- `POST /products`  
+  Creates a new product (not ready yet).
+
+### Campaign Jobs
+
+- `POST /jobs/send-birthday-emails`  
+  Triggers the email campaign (made for testing trigger).
+
+---
+
+## Testing
+
+```bash
+pnpm test
+pnpm test:watch
+```
+
+---
+
+## Author
+
+**Amir Diafi**  
+**Date:** March 2025
 
 ```
 
-<!-- PostgreSQL -->
-
-## PostgreSQL
-
-To run this project, you need to have PostgreSQL installed on your machine. You can download it from [here](https://www.postgresql.org/download/).
-
-After installing PostgreSQL, you can run it using the following command:
-
-```bash
-sudo service postgresql start
-```
-
-<!-- Run -->
-
-<!-- Based on the DB scheme you cam add some data like this with PostgreSQL commands -->
-
-<!-- model User {
-  id                    Int                     @id @default(autoincrement())
-  email                 String                  @unique
-  birthdate             DateTime
-  createdAt             DateTime                @default(now())
-  userProductPreference UserProductPreference[]
-}
-
-model Product {
-  id                    Int                     @id @default(autoincrement())
-  name                  String
-  description           String?
-  price                 Float
-  image_url             String?
-  userProductPreference UserProductPreference[]
-}
-
-model UserProductPreference {
-  id        Int     @id @default(autoincrement())
-  user_id    Int
-  product_id Int
-  product   Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
-  user      User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-}
- -->
-
-```bash
-INSERT INTO "User" (email, birthdate) VALUES ('  ', '  ');
-INSERT INTO "Product" (name, description, price, image_url) VALUES ('  ', '  ', '  ', '  ');
-INSERT INTO "UserProductPreference" (user_id, product_id) VALUES ('  ', '  ');
-```
-
-## Run
-
-To run this project, run the following command:
-
-```bash
-pnpm start:dev
+This `README.md` file is ready to be used in your GitHub repository. It provides a clear and structured overview of the project, setup instructions, and key details.
 ```
