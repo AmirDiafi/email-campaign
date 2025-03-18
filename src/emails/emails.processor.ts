@@ -50,6 +50,10 @@ export class EmailProcessor {
       { expiresIn: '7d' }, // Expiry time for the discount code
     );
 
+    if (!discountCode) {
+      throw new Error('Missing discount code in email');
+    }
+
     // Fetch recommended products for the user based on their preferences
     let recommendedProducts = await this.prisma.product.findMany({
       where: { userProductPreference: { some: { user_id: userId } } },

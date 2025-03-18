@@ -15,6 +15,7 @@ import { EmailScheduler } from './emails/emails.scheduler';
 import { BullModule } from '@nestjs/bull';
 import { EmailTestController } from './emails/emails.controller';
 import { bullConfig } from 'src/config/bull.config';
+import { SentryModule } from '@sentry/nestjs/setup';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { bullConfig } from 'src/config/bull.config';
       defaultJobOptions: bullConfig.defaultJobOptions,
     }),
     ScheduleModule.forRoot(),
+    SentryModule.forRoot(),
     PrismaModule,
     UsersModule,
     EmailModule,

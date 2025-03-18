@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
 
 /**
  * Controller for managing user-related operations.
@@ -25,10 +26,8 @@ export class UsersController {
    * POST /users/create
    */
   @Post('create')
-  async createUser(
-    @Body() userDataRequest: { email: string; birthdate: Date | string },
-  ) {
-    const { email, birthdate } = userDataRequest;
+  async createUser(@Body() dto: CreateUserDto) {
+    const { email, birthdate } = dto;
     return this.usersService.createUser(email, new Date(birthdate));
   }
 
