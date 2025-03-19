@@ -1,5 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { IsEmail, IsDate, IsString, IsNotEmpty } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  ValidateIf,
+  IsDateString,
+  IsISO8601,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -7,10 +14,9 @@ export class CreateUserDto {
   email: string;
 
   @IsNotEmpty()
-  @IsDate()
-  birthdate: Date;
-
-  @IsNotEmpty()
-  @IsString()
-  password: string;
+  @ValidateIf((o) => typeof o.birthdate === 'string')
+  @IsDateString()
+  @ValidateIf((o) => o.birthdate instanceof Date)
+  @IsISO8601()
+  birthdate: Date | string;
 }

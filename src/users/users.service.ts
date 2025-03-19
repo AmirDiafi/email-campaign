@@ -71,7 +71,6 @@ export class UsersService {
         },
       },
       take: 10, // Pagination limit
-      skip: 20, // Pagination offset
     });
 
     // Filter users whose birthday is within the next 7 days
