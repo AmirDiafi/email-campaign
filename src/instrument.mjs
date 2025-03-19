@@ -1,4 +1,3 @@
-// @ts-ignore
 import * as Sentry from '@sentry/nestjs';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
 
