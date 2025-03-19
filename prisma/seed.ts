@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { InteractionEnum, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -55,15 +55,24 @@ async function main() {
     },
   });
 
-  // Create user-product preferences
-  await prisma.userProductPreference.createMany({
+  // Create suggestions
+  await prisma.userSuggestion.createMany({
     data: [
-      { user_id: user1.id, product_id: product1.id },
-      { user_id: user1.id, product_id: product2.id },
-      { user_id: user2.id, product_id: product2.id },
-      { user_id: user2.id, product_id: product3.id },
-      { user_id: user3.id, product_id: product1.id },
-      { user_id: user3.id, product_id: product3.id },
+      {
+        user_id: user1.id,
+        product_id: product1.id,
+        interactType: InteractionEnum.LIKE,
+      },
+      {
+        user_id: user2.id,
+        product_id: product2.id,
+        interactType: InteractionEnum.SAVE,
+      },
+      {
+        user_id: user3.id,
+        product_id: product3.id,
+        interactType: InteractionEnum.VIEW,
+      },
     ],
   });
 

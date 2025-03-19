@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as jwt from 'jsonwebtoken';
 import { EmailService } from './emails.service';
+import { suggestionProductsSortedByWeight } from 'src/utils/sortUserProducts';
 
 /**
  * Processor for handling email-related jobs in the 'emailQueue'.
@@ -37,11 +38,23 @@ export class EmailProcessor {
     const { userId } = job.data;
 
     // Fetch user details from the database
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { suggestions: { include: { product: true } } },
+    });
     if (!user) {
       console.error(`User with ID ${userId} not found.`);
       return;
     }
+
+    // if user has suggestions sort them else fetch some products and add them
+    const sortedProducts =
+      user.suggestions.length > 0
+        ? suggestionProductsSortedByWeight(user.suggestions)
+        : await this.prisma.product.findMany({
+            take: 3,
+            orderBy: { price: 'asc' },
+          });
 
     // Generate a secure JWT token for the discount code
     const discountCode = jwt.sign(
@@ -54,20 +67,6 @@ export class EmailProcessor {
       throw new Error('Missing discount code in email');
     }
 
-    // Fetch recommended products for the user based on their preferences
-    let recommendedProducts = await this.prisma.product.findMany({
-      where: { userProductPreference: { some: { user_id: userId } } },
-      take: 3, // Limit to 3 products
-    });
-
-    if (recommendedProducts.length === 0) {
-      // If no products are found, recommend default products
-      recommendedProducts = await this.prisma.product.findMany({
-        where: { price: { lte: 50 } }, // Default to cheaper products
-        take: 3,
-      });
-    }
-
     // Construct the email content
     const emailContent = {
       to: user.email,
@@ -78,7 +77,7 @@ export class EmailProcessor {
         <h5 style="color:blue;">${discountCode}</h5>
         <h3 style="color: green;">Here are some products we think you'll love:</h3>
         <ul style="list-style-type: none; padding: 0;">
-          ${recommendedProducts.map((p) => `<li style="margin-bottom: 10px; font-size: 16px;">${p.name} - $${p.price}</li>`).join('')}
+          ${sortedProducts.map((p) => `<li style="margin-bottom: 10px; font-size: 16px;">${p.name} - $${p.price}</li>`).join('')}
         </ul>
         <p style="font-size: 14px;">Enjoy your birthday shopping! 🛍️</p>
       `,

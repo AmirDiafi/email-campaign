@@ -28,15 +28,7 @@ export class JobService {
    * // Adds a job for sending a birthday email to user with ID 1
    */
   async scheduleBirthdayEmail(userId: number) {
-    await this.emailQueue.add(
-      'sendBirthdayEmail',
-      { userId },
-      // Add job options for retries and timeouts - Emails might get stuck in the queue if job execution takes too long.
-      {
-        attempts: 3, // Retry 3 times
-        timeout: 5000, // 5 seconds timeout
-      },
-    );
+    await this.emailQueue.add('sendBirthdayEmail', { userId });
   }
 
   /**

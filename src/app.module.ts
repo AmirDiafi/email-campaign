@@ -16,6 +16,7 @@ import { BullModule } from '@nestjs/bull';
 import { EmailTestController } from './emails/emails.controller';
 import { bullConfig } from 'src/config/bull.config';
 import { SentryModule } from '@sentry/nestjs/setup';
+import { SuggestionsModule } from './suggestions/suggestions.module';
 
 @Module({
   imports: [
@@ -30,6 +31,8 @@ import { SentryModule } from '@sentry/nestjs/setup';
     PrismaModule,
     UsersModule,
     EmailModule,
+    SuggestionsModule,
+    SuggestionsModule,
   ],
   providers: [
     EmailProcessor,

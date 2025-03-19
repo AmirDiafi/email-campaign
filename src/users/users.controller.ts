@@ -1,10 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 
-/**
- * Controller for managing user-related operations.
- */
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -26,31 +23,24 @@ export class UsersController {
    * POST /users/create
    */
   @Post('create')
-  async createUser(@Body() dto: CreateUserDto) {
+  createUser(@Body() dto: CreateUserDto) {
     const { email, birthdate } = dto;
     return this.usersService.createUser(email, new Date(birthdate));
   }
 
   /**
-   * Retrieves all users with upcoming birthdays.
-   *
-   * @returns A promise containing an array of users with upcoming birthdays.
-   *
-   * @example
-   * // Example response:
-   * [
-   *   {
-   *     "id": 1,
-   *     "email": "user@example.com",
-   *     "birthdate": "1990-01-01T00:00:00Z"
-   *   },
-   *   ...
-   * ]
-   *
-   * GET /users/upcoming-birthdays
+   * Get users with upcoming birthdays along with their suggestions.
    */
-  @Get('upcoming-birthdays')
-  async getUpcomingBirthdays() {
+  @Get('/upcoming-birthdays')
+  async getUsersWithUpcomingBirthdays() {
     return this.usersService.getUsersWithUpcomingBirthdays();
+  }
+
+  /**
+   * Get a single user by ID with their suggestions.
+   */
+  @Get('/:userId')
+  async getUserWithSuggestions(@Param('userId') userId: string) {
+    return this.usersService.getUserWithSuggestions(parseInt(userId));
   }
 }

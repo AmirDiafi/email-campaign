@@ -1,9 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-
-/**
- * Service for managing user-related business logic.
- */
+import { getUserWithSortedProducts } from 'src/utils/sortUserProducts';
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
@@ -37,44 +34,48 @@ export class UsersService {
   }
 
   /**
-   * Retrieves users whose birthdays are within the next 7 days.
-   *
-   * This function also includes user preferences for products and fetches associated product data.
-   *
-   * @returns A promise containing an array of users with their product preferences and upcoming birthdays.
-   *
-   * @example
-   * // Example output:
-   * [
-   *   {
-   *     id: 1,
-   *     email: "user@example.com",
-   *     birthdate: "1990-01-01T00:00:00Z",
-   *     userProductPreference: [
-   *       {
-   *         product: { id: 101, name: "Product 1", description: "Product description" }
-   *       }
-   *     ]
-   *   },
-   *   ...
-   * ]
+   * Get a single user by ID with their suggested products.
+   * @param userId - User ID
    */
-  async getUsersWithUpcomingBirthdays() {
-    const today = new Date();
-
-    const res = await this?.prisma?.user?.findMany({
+  async getUserWithSuggestions(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
       include: {
-        userProductPreference: {
+        suggestions: {
           include: {
-            product: true, // Fetch preferred products
+            product: true,
           },
         },
       },
-      take: 10, // Pagination limit
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
+  /**
+   * Get users with upcoming birthdays along with their suggested products.
+   */
+  async getUsersWithUpcomingBirthdays() {
+    const today = new Date();
+    const upcomingDate = new Date();
+    upcomingDate.setDate(today.getDate() + 7);
+
+    const users = await this.prisma.user.findMany({
+      include: {
+        suggestions: {
+          include: {
+            product: true,
+          },
+        },
+      },
     });
 
     // Filter users whose birthday is within the next 7 days
-    const upcomingUsers = res.filter((user) => {
+    const upcomingUsers = users.filter((user) => {
       const userBirthday = user.birthdate.getDate();
       const userBirthMonth = user.birthdate.getMonth() + 1;
       const todayMonth = today.getMonth() + 1;
@@ -87,6 +88,10 @@ export class UsersService {
       );
     });
 
-    return upcomingUsers;
+    const sortedUserProducts = upcomingUsers.map((user) =>
+      getUserWithSortedProducts(user),
+    );
+
+    return sortedUserProducts;
   }
 }
